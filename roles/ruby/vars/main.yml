@@ -1,0 +1,5 @@
+ruby_version: 3.1.2
+ruby_sources_url: "https://cache.ruby-lang.org/pub/ruby/3.1/ruby-{{ ruby_version }}.tar.gz"
+sources_dir: "/usr/local/src"
+ruby_sources_dir: "{{ sources_dir }}/ruby-{{ ruby_version }}"
+ruby_dir: "/opt/ruby-{{ ruby_version }}"

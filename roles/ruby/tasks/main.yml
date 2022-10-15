@@ -1,0 +1,36 @@
+---
+- name: Ruby binary
+  stat:
+    path: "{{ ruby_dir }}/bin/ruby"
+  register: ruby_bin
+
+- name: Download ruby sources
+  unarchive:
+    src: "{{ ruby_sources_url }}"
+    dest: "{{ sources_dir }}"
+    remote_src: "yes"
+    creates: "{{ ruby_sources_dir }}/configure"
+  when: not ruby_bin.stat.exists
+
+- name: Install build deps
+  apt:
+    name:
+      - build-essential
+      - libgmp-dev
+      - libreadline6-dev
+      - libssl-dev
+    update_cache: yes
+  when: not ruby_bin.stat.exists
+
+- name: Configure
+  shell:
+    chdir: "{{ ruby_sources_dir }}"
+    creates: "{{ ruby_sources_dir }}/Makefile"
+    cmd: "./configure --prefix {{ ruby_dir }}"
+  when: not ruby_bin.stat.exists
+
+- name: Install ruby
+  make:
+    chdir: "{{ ruby_sources_dir }}"
+    target: "install"
+  when: not ruby_bin.stat.exists
