@@ -1,0 +1,1 @@
+# hay-speedcubing.com
