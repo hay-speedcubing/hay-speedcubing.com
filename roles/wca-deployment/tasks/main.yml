@@ -1,0 +1,37 @@
+---
+- name: Generate release name
+  set_fact:
+    release_name: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+- name: Set release path
+  set_fact:
+    release_path: "{{ wca_dir }}/releases/{{ release_name }}"
+
+- name: Create release dir
+  file:
+    state: directory
+    recurse: yes
+    path: "{{ release_path }}"
+
+- name: Clone WcaOnRails
+  git:
+    repo: "https://github.com/thewca/worldcubeassociation.org.git"
+    dest: "{{ release_path }}"
+    accept_hostkey: yes
+
+- name: Setup bundler
+  shell:
+    cmd: "{{ ruby_dir }}/bin/bundler config set --local path '{{ wca_dir }}/.bundle'"
+    chdir: "{{ release_path }}/WcaOnRails"
+    creates: "{{ release_path }}/WcaOnRails/.bundle/config"
+
+- name: Bundle install
+  bundler:
+    executable: "{{ ruby_dir }}/bin/bundler"
+    chdir: "{{ release_path }}/WcaOnRails"
+    exclude_groups:
+      - development
+      - test
+
+- name: Link current
+  file:

@@ -1,4 +1,7 @@
 ---
+- debug:
+    msg: "{{ ruby_sources_url }}"
+
 - name: Ruby binary
   stat:
     path: "{{ ruby_dir }}/bin/ruby"
@@ -19,6 +22,7 @@
       - libgmp-dev
       - libreadline6-dev
       - libssl-dev
+      - zlib1g-dev
     update_cache: yes
   when: not ruby_bin.stat.exists
 
@@ -33,4 +37,11 @@
   make:
     chdir: "{{ ruby_sources_dir }}"
     target: "install"
+  when: not ruby_bin.stat.exists
+
+- name: Update .bashrc
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: "export PATH={{ ruby_dir }}/bin:$PATH"
+    create: yes
   when: not ruby_bin.stat.exists

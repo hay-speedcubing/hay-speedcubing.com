@@ -1,0 +1,6 @@
+ruby_version: 3.1.2
+sources_dir: "/usr/local/src"
+ruby_sources_dir: "{{ sources_dir }}/ruby-{{ ruby_version }}"
+ruby_dir: "/opt/ruby-{{ ruby_version }}"
+wca_user: wca
+wca_dir: "/srv/wca"

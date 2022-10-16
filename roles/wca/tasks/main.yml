@@ -1,0 +1,40 @@
+---
+- name: Install packages
+  apt:
+    name:
+      - git
+      - libmysqlclient-dev
+    update_cache: yes
+
+- name: Find bash
+  shell:
+    cmd: "which bash"
+  register: which_bash
+
+- name: Create app user
+  user:
+    name: "{{ wca_user }}"
+    shell: "{{ which_bash.stdout }}"
+  register: user
+
+- name: Give ssh access
+  authorized_key:
+    user: "{{ wca_user }}"
+    state: present
+    key: "https://github.com/{{ item }}.keys"
+  with_items:
+    - "tank-bohr"
+
+- name: Update .bashrc
+  lineinfile:
+    path: "{{ user.home }}/.bashrc"
+    line: "export PATH={{ ruby_dir }}/bin:$PATH"
+    create: yes
+
+- name: Ensure app dir
+  file:
+    state: directory
+    path: "{{ wca_dir }}"
+    owner: "{{ wca_user }}"
+    recurse: yes
+
