@@ -31,6 +31,9 @@
     line: "export PATH={{ ruby_dir }}/bin:$PATH"
     create: yes
 
+- name: Install systemd unit
+  template:
+
 - name: Ensure app dir
   file:
     state: directory

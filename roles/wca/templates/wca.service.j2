@@ -1,0 +1,14 @@
+[Unit]
+Description=WCA
+After=network.target
+
+[Service]
+User={{ wca_user }}
+Group={{ wca_user }}
+WorkingDirectory=/srv/wca/releases/current/WcaOnRails
+Environment="RAILS_ENV=production"
+Environment="SECRET_KEY_BASE={{ secret_key_base }}"
+ExecStart=rails s
+
+[Install]
+WantedBy = multi-user.target

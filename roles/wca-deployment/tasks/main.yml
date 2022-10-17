@@ -35,3 +35,11 @@
 
 - name: Link current
   file:
+    state: link
+    src: "{{ release_path }}"
+    path: "{{ wca_dir }}/releases/current"
+
+- name: Cleanup obsolete releases
+  shell:
+    cmd: "ls -1 --directory --time birth {{ wca_dir }}/releases/* | tail -n +{{ keep_releases + 1 }} | xargs rm -r"
+  when: keep_releases > 0
